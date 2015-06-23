@@ -1,22 +1,40 @@
 package com.github.mfriedenhagen.spocktest
 
+import groovy.json.JsonSlurper
 import spock.lang.Specification
+import spock.lang.Subject
 import spock.lang.Unroll
 
-class FirstTest extends Specification {
-    @Unroll("Test #urlString")
-    def 'test url'(def urlString) {
+import java.util.concurrent.TimeUnit
+
+class FirstTest extends Specification implements UrlGetTextTrait {
+
+
+    @Unroll("Test #urlString ends with #needle")
+    def 'test url'(String urlString, String needle) {
         given:
+        @Subject
         def url = new URL(urlString)
         when:
-        def text = url.getText('UTF-8')
+        def text = getText(url)
         then:
-        text != ''
+        text.trim().endsWith(needle)
         where:
-        urlString << [
-                'http://www.google.de/',
-                'http://web.de/',
-                'http://gmx.net/'
-        ]
+        urlString               | needle
+        'http://www.google.de/' | '</html>'
+        'http://web.de/'        | '</html>'
+        'http://gmx.net/'       | '</html>'
+        'http://repo.jfrog.org/artifactory/api/system/ping' | 'OK'
+    }
+
+    def 'test artifactory'() {
+        given:
+        @Subject
+        def url = new URL('http://repo.jfrog.org/artifactory/api/search/gavc?g=junit&a=junit&v=4.1*')
+        when:
+        def json = new JsonSlurper().parse(url)
+        then:
+        json['results'].length > 0
+
     }
 }
