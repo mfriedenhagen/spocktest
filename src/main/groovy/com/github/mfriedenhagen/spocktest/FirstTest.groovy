@@ -33,8 +33,9 @@ class FirstTest extends Specification implements UrlGetTextTrait {
         def url = new URL('http://repo.jfrog.org/artifactory/api/search/gavc?g=junit&a=junit&v=4.1*')
         when:
         def json = new JsonSlurper().parse(url)
+        List<Map<String, URI>> results = json['results']
         then:
-        json['results'].length > 0
+        results.size() > 0
 
     }
 }
