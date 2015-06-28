@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class FirstTest extends Specification implements UrlGetTextTrait {
 
 
-    @Unroll("Test #urlString ends with #needle")
+    @Unroll("Body of #urlString ends with #needle")
     def 'test url'(String urlString, String needle) {
         given:
         @Subject
@@ -27,7 +27,7 @@ class FirstTest extends Specification implements UrlGetTextTrait {
         'http://repo.jfrog.org/artifactory/api/system/ping' | 'OK'
     }
 
-    def 'test artifactory'() {
+    def 'Artifactory JUNIT search is not empty'() {
         given:
         @Subject
         def url = new URL('http://repo.jfrog.org/artifactory/api/search/gavc?g=junit&a=junit&v=4.1*')
