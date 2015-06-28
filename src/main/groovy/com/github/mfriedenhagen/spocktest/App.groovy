@@ -11,12 +11,14 @@ class App {
     static void main(String[] args) {
         ClassPath classPath = ClassPath.from(App.class.getClassLoader())
         ImmutableSet<ClassPath.ClassInfo> classInfos = classPath.getTopLevelClasses(App.package.name)
-        def specifications = classInfos.find { it.load().genericSuperclass.is(Specification) }
+        Set<Class> specifications = classInfos
+                .findAll { it.load().genericSuperclass.is(Specification) }
+                .collect { it.load() }
         println specifications
         println args
         def core = new JUnitCore()
         core.addListener(new ExtendedTextListener(System.out))
-        def result = core.run(FirstTest)
+        def result = core.run(specifications.toArray(new Class[specifications.size()]))
         System.exit(result.failureCount)
     }
 }
