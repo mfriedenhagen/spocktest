@@ -18,6 +18,6 @@ public class ExtendedTextListener extends TextListener {
 
     @Override
     public void testStarted(Description description) {
-        writer.printf(Locale.ENGLISH, "Started %s%n", description);
+        writer.printf(Locale.ENGLISH, "Started %s %s%n", Thread.currentThread(), description);
     }
 }
